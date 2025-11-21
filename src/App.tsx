@@ -82,7 +82,7 @@ const formatTime = (minutes: number) => {
 // --- Components ---
 
 const Logo = () => (
-  <div className="flex items-center select-none shadow-sm">
+  <div className="flex items-center select-none shadow-sm scale-90 sm:scale-100 origin-left">
     <div className="h-10 px-4 flex items-center rounded-l-lg bg-[#003366]">
       <span className="text-white font-bold text-2xl tracking-tighter pb-1 font-sans leading-none">abil</span>
     </div>
@@ -129,24 +129,24 @@ const SliderInput = ({
   return (
     <div className="mb-6 group">
       <div className="flex justify-between items-center mb-2">
-        <label className="text-gray-700 font-medium text-sm sm:text-base">{label}</label>
+        <label className="text-gray-700 font-medium text-sm">{label}</label>
         <div className="flex items-center gap-1">
-            {prefix && <span className={`text-lg font-bold ${textColorClass}`}>{prefix}</span>}
+            {prefix && <span className={`text-base font-bold ${textColorClass}`}>{prefix}</span>}
             <input 
                 type="number" 
                 value={value}
                 onChange={handleInputChange}
                 min={min}
                 max={max}
-                className={`text-lg font-bold ${textColorClass} w-24 text-right bg-transparent border-b border-gray-300 focus:border-[#003366] focus:outline-none transition-colors`}
+                className={`text-base font-bold ${textColorClass} w-20 text-right bg-transparent border-b border-gray-300 focus:border-[#003366] focus:outline-none transition-colors`}
             />
-            {unit && <span className={`text-lg font-bold ${textColorClass}`}>{unit}</span>}
+            {unit && <span className={`text-base font-bold ${textColorClass}`}>{unit}</span>}
         </div>
       </div>
       
-      <div className="relative h-8 flex items-center">
+      <div className="relative h-6 flex items-center">
         {/* Track */}
-        <div className="w-full h-2 bg-gray-200 rounded-lg relative overflow-hidden pointer-events-none">
+        <div className="w-full h-1.5 bg-gray-200 rounded-lg relative overflow-hidden pointer-events-none">
           <div 
             className="absolute h-full rounded-lg" 
             style={{ width: `${safePercentage}%`, backgroundColor: activeColor }}
@@ -165,9 +165,9 @@ const SliderInput = ({
         
         {/* Thumb */}
         <div 
-          className="absolute h-5 w-5 bg-white border-2 rounded-full shadow-md pointer-events-none z-20 transition-transform group-hover:scale-110"
+          className="absolute h-4 w-4 bg-white border-2 rounded-full shadow-md pointer-events-none z-20 transition-transform group-hover:scale-110"
           style={{ 
-            left: `calc(${safePercentage}% - 10px)`,
+            left: `calc(${safePercentage}% - 8px)`,
             borderColor: activeColor 
           }}
         ></div>
@@ -183,26 +183,27 @@ const TimeSliderInput = ({
   value: number;
   onChange: (val: number) => void;
 }) => {
-  const percentage = ((value - 1) / (1440 - 1)) * 100;
+  const MAX_MINUTES = 180;
+  const percentage = ((value - 1) / (MAX_MINUTES - 1)) * 100;
   const safePercentage = Math.min(100, Math.max(0, percentage));
 
   const markers = [
-    { val: 5, label: '5m', color: 'bg-emerald-500' },
-    { val: 60, label: '1h', color: 'bg-yellow-400' },
-    { val: 300, label: '5h', color: 'bg-[#FF6600]' }, // Use brand orange
-    { val: 1440, label: '24h', color: 'bg-red-500' },
+    { val: 5, label: '5m', color: 'bg-green-500' },
+    { val: 30, label: '30m', color: 'bg-yellow-500' },
+    { val: 60, label: '1h', color: 'bg-orange-500' },
+    { val: 180, label: '3h', color: 'bg-red-500' },
   ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = Number(e.target.value);
-    if (val > 1440) val = 1440;
+    if (val > MAX_MINUTES) val = MAX_MINUTES;
     onChange(val);
   };
 
   return (
-    <div className="mb-8 group">
+    <div className="mb-6 group">
       <div className="flex justify-between items-center mb-2">
-        <label className="text-gray-700 font-medium text-sm sm:text-base">Tempo médio de resposta</label>
+        <label className="text-gray-700 font-medium text-sm">Tempo médio de resposta</label>
         <div className="flex flex-col items-end">
             <div className="flex items-center gap-1">
                 <input 
@@ -210,23 +211,26 @@ const TimeSliderInput = ({
                     value={value}
                     onChange={handleInputChange}
                     min={1}
-                    max={1440}
-                    className="text-lg font-bold text-[#003366] w-20 text-right bg-transparent border-b border-gray-300 focus:border-[#003366] focus:outline-none"
+                    max={MAX_MINUTES}
+                    className="text-base font-bold text-[#003366] w-16 text-right bg-transparent border-b border-gray-300 focus:border-[#003366] focus:outline-none"
                 />
-                <span className="text-lg font-bold text-[#003366]">min</span>
+                <span className="text-base font-bold text-[#003366]">min</span>
             </div>
-            <span className="text-xs text-gray-500 font-medium mt-1">{formatTime(value)}</span>
+            <span className="text-[10px] text-gray-500 font-medium mt-0.5">{formatTime(value)}</span>
         </div>
       </div>
       
       <div className="relative h-10">
-        <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2 h-3 bg-gray-200 rounded-lg overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2 h-2.5 bg-gray-200 rounded-lg overflow-hidden pointer-events-none">
           {/* Zones */}
           <div className="absolute h-full w-full flex opacity-30">
-             <div className="h-full bg-emerald-500" style={{ width: `${(5/1440)*100}%` }}></div>
-             <div className="h-full bg-emerald-300" style={{ width: `${(15/1440)*100}%` }}></div>
-             <div className="h-full bg-yellow-400" style={{ width: `${(60/1440)*100}%` }}></div>
-             <div className="h-full bg-[#FF6600]" style={{ width: `${(240/1440)*100}%` }}></div>
+             {/* 0-5m: Green */}
+             <div className="h-full bg-green-500" style={{ width: `${(5/MAX_MINUTES)*100}%` }}></div>
+             {/* 5-30m: Yellow (30-5 = 25) */}
+             <div className="h-full bg-yellow-400" style={{ width: `${(25/MAX_MINUTES)*100}%` }}></div>
+             {/* 30-60m: Orange (60-30 = 30) */}
+             <div className="h-full bg-orange-500" style={{ width: `${(30/MAX_MINUTES)*100}%` }}></div>
+             {/* 60-180m: Red (Remainder) */}
              <div className="h-full bg-red-500 flex-grow"></div>
           </div>
           
@@ -238,16 +242,16 @@ const TimeSliderInput = ({
         </div>
 
         {markers.map((m) => (
-          <div key={m.label} className="absolute top-7 flex flex-col items-center transform -translate-x-1/2 pointer-events-none" style={{ left: `${(m.val / 1440) * 100}%` }}>
-            <div className={`w-1 h-2 ${m.color} mb-1 rounded-sm`}></div>
-            <span className="text-[10px] text-gray-500 font-semibold">{m.label}</span>
+          <div key={m.label} className="absolute top-6 flex flex-col items-center transform -translate-x-1/2 pointer-events-none" style={{ left: `${(m.val / MAX_MINUTES) * 100}%` }}>
+            <div className={`w-0.5 h-1.5 ${m.color} mb-0.5 rounded-sm`}></div>
+            <span className="text-[9px] text-gray-500 font-semibold">{m.label}</span>
           </div>
         ))}
 
         <input 
           type="range" 
           min={1} 
-          max={1440} 
+          max={MAX_MINUTES} 
           step={1} 
           value={value} 
           onChange={(e) => onChange(Number(e.target.value))}
@@ -255,9 +259,9 @@ const TimeSliderInput = ({
         />
         
         <div 
-          className="absolute h-6 w-6 bg-white border-2 border-[#003366] rounded-full shadow-lg pointer-events-none z-20 transition-transform hover:scale-110"
+          className="absolute h-5 w-5 bg-white border-2 border-[#003366] rounded-full shadow-lg pointer-events-none z-20 transition-transform hover:scale-110"
           style={{ 
-              left: `calc(${safePercentage}% - 12px)`,
+              left: `calc(${safePercentage}% - 10px)`,
               top: '50%',
               transform: 'translateY(-50%)' 
           }}
@@ -275,7 +279,7 @@ const App: React.FC = () => {
   const [conversion, setConversion] = useState(10);
   const [ticket, setTicket] = useState(5000);
   const [followUps, setFollowUps] = useState(3);
-  const [responseTime, setResponseTime] = useState(240);
+  const [responseTime, setResponseTime] = useState(60); // Default changed to 60m
 
   // --- Calculations ---
   const result: CalculationResult = useMemo(() => {
@@ -301,17 +305,23 @@ const App: React.FC = () => {
     const followUpLossRevenue = followUpLossSales * ticket;
 
     // Response Time Logic
+    // 1. Calculate Factor (Sigmoid Logic - KEPT INTACT)
     const k = 2.5;
     const midpoint = 1.78; 
     const timeLog = Math.log10(responseTime + 1);
     const responseTimeLossFactor = 1 / (1 + Math.exp(-k * (timeLog - midpoint)));
 
-    let responseStatus: CalculationResult['responseStatus'] = 'CRITICAL';
-    if (responseTimeLossFactor < 0.15) responseStatus = 'EXCELLENT';
-    else if (responseTimeLossFactor < 0.35) responseStatus = 'GOOD';
-    else if (responseTimeLossFactor < 0.60) responseStatus = 'IMPROVE';
-    else if (responseTimeLossFactor < 0.85) responseStatus = 'WARNING';
-    else responseStatus = 'CRITICAL';
+    // 2. Determine Status (Visual Logic - CHANGED)
+    let responseStatus: CalculationResult['responseStatus'];
+    if (responseTime <= 5) {
+      responseStatus = 'EXCELLENT';
+    } else if (responseTime <= 30) {
+      responseStatus = 'GOOD';
+    } else if (responseTime <= 60) {
+      responseStatus = 'WARNING';
+    } else {
+      responseStatus = 'CRITICAL';
+    }
 
     const maxResponseRecoverable = nonConvertedLeads * 0.60;
     const responseRecoverableLeads = maxResponseRecoverable * responseTimeLossFactor;
@@ -377,11 +387,11 @@ const App: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'CRITICAL': return 'bg-red-600';
-      case 'WARNING': return 'bg-[#FF6600]'; // Brand Orange
-      case 'IMPROVE': return 'bg-yellow-500';
-      case 'GOOD': return 'bg-emerald-500';
-      case 'ADEQUATE':
-      case 'EXCELLENT': return 'bg-[#003366]'; // Brand Blue
+      case 'WARNING': return 'bg-orange-500';
+      case 'IMPROVE': return 'bg-yellow-500'; // Legacy fallback
+      case 'GOOD': return 'bg-yellow-500';
+      case 'ADEQUATE': return 'bg-emerald-700';
+      case 'EXCELLENT': return 'bg-emerald-700';
       default: return 'bg-gray-500';
     }
   };
@@ -389,11 +399,11 @@ const App: React.FC = () => {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'CRITICAL': return 'CRÍTICO';
-      case 'WARNING': return 'ATENÇÃO';
+      case 'WARNING': return 'RUIM';
       case 'IMPROVE': return 'MELHORAR';
-      case 'GOOD': return 'BOM';
+      case 'GOOD': return 'ATENÇÃO';
       case 'ADEQUATE': return 'ADEQUADO';
-      case 'EXCELLENT': return 'EXCELENTE';
+      case 'EXCELLENT': return 'ÓTIMO';
       default: return '';
     }
   };
@@ -403,152 +413,156 @@ const App: React.FC = () => {
     setConversion(10);
     setTicket(5000);
     setFollowUps(3);
-    setResponseTime(240);
+    setResponseTime(60);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans pb-20">
+    <div className="min-h-screen lg:h-screen flex flex-col bg-gray-50 text-gray-800 font-sans overflow-x-hidden">
       {/* Navbar */}
-      <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <header className="bg-white shadow-sm border-b border-gray-100 shrink-0 z-50 h-16 lg:h-14 flex items-center">
+        <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Logo />
             <span className="hidden sm:block text-gray-300 text-2xl font-light">|</span>
-            <h1 className="hidden sm:block text-lg font-medium text-gray-600 tracking-tight">Diagnóstico Comercial</h1>
+            <h1 className="hidden sm:block text-sm lg:text-base font-medium text-gray-600 tracking-tight">Diagnóstico Comercial</h1>
           </div>
           <div className="flex items-center gap-4">
             <button 
               onClick={handleReset}
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#003366] transition-colors font-medium"
+              className="flex items-center gap-2 text-xs lg:text-sm text-gray-500 hover:text-[#003366] transition-colors font-medium"
             >
-              <RotateCcw size={16} /> Resetar
+              <RotateCcw size={14} /> Resetar
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {/* Main Layout - Responsive Split */}
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* LEFT COLUMN: INPUTS */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 sticky top-28">
-              <h2 className="text-xl font-bold text-[#003366] mb-8 flex items-center gap-3">
-                <div className="bg-blue-50 p-2 rounded-lg">
-                   <Calculator className="text-[#003366]" size={20} />
-                </div>
-                Parâmetros
-              </h2>
+        {/* LEFT COLUMN: INPUTS (Fixed Sidebar on Desktop) */}
+        <div className="w-full lg:w-80 lg:shrink-0 bg-white border-r border-gray-100 overflow-y-auto custom-scrollbar p-6 lg:pb-24 z-10">
+          <h2 className="text-lg font-bold text-[#003366] mb-6 flex items-center gap-2">
+            <div className="bg-blue-50 p-1.5 rounded-lg">
+                <Calculator className="text-[#003366]" size={16} />
+            </div>
+            Parâmetros
+          </h2>
 
-              <div className="space-y-8">
-                <SliderInput 
-                  label="Leads recebidos por mês"
-                  value={leads}
-                  onChange={setLeads}
-                  min={10}
-                  max={5000}
-                  step={10}
-                  highlightColor="blue"
-                />
-                <SliderInput 
-                  label="Taxa de conversão atual"
-                  value={conversion}
-                  onChange={setConversion}
-                  min={0}
-                  max={100}
-                  step={0.5}
-                  unit="%"
-                  highlightColor="blue"
-                />
-                <SliderInput 
-                  label="Ticket médio por venda"
-                  value={ticket}
-                  onChange={setTicket}
-                  min={50}
-                  max={50000}
-                  step={50}
-                  prefix="R$ "
-                  highlightColor="blue"
-                />
-                
-                <div className="border-t border-gray-100 pt-8">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Eficiência Operacional</h3>
-                  <SliderInput 
-                    label="Tentativas de follow-up"
-                    value={followUps}
-                    onChange={setFollowUps}
-                    min={0}
-                    max={10}
-                    step={1}
-                    highlightColor="orange"
-                  />
-                  <TimeSliderInput 
-                    value={responseTime}
-                    onChange={setResponseTime}
-                  />
-                </div>
-              </div>
+          <div className="space-y-6">
+            <SliderInput 
+              label="Leads recebidos/mês"
+              value={leads}
+              onChange={setLeads}
+              min={10}
+              max={5000}
+              step={10}
+              highlightColor="blue"
+            />
+            <SliderInput 
+              label="Taxa de conversão"
+              value={conversion}
+              onChange={setConversion}
+              min={0}
+              max={100}
+              step={0.5}
+              unit="%"
+              highlightColor="blue"
+            />
+            <SliderInput 
+              label="Ticket médio"
+              value={ticket}
+              onChange={setTicket}
+              min={50}
+              max={50000}
+              step={50}
+              prefix="R$ "
+              highlightColor="blue"
+            />
+            
+            <div className="border-t border-gray-100 pt-6">
+              <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Eficiência Operacional</h3>
+              <SliderInput 
+                label="Tentativas de follow-up"
+                value={followUps}
+                onChange={setFollowUps}
+                min={0}
+                max={10}
+                step={1}
+                highlightColor="orange"
+              />
+              <TimeSliderInput 
+                value={responseTime}
+                onChange={setResponseTime}
+              />
             </div>
           </div>
+        </div>
 
-          {/* RIGHT COLUMN: RESULTS */}
-          <div className="lg:col-span-8 space-y-8">
+        {/* RIGHT COLUMN: RESULTS (Dashboard) */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 pb-32 lg:p-8 lg:pb-24 bg-gray-50/50">
+          <div className="max-w-7xl mx-auto space-y-6 lg:space-y-8">
             
-            {/* SECTION 1: CURRENT DIAGNOSIS */}
-            <div className="bg-gradient-to-br from-[#003366] to-[#002244] rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">
+            {/* ROW 1: CURRENT DIAGNOSIS */}
+            <div className="bg-gradient-to-r from-[#003366] to-[#002244] rounded-xl shadow-sm p-6 lg:p-8 text-white relative overflow-hidden">
               <div className="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-[#004488] to-transparent opacity-30"></div>
               
-              <h2 className="text-lg font-medium text-blue-100 mb-6 flex items-center gap-2 relative z-10">
-                <TrendingUp size={20} /> Diagnóstico Atual
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
-                <div>
-                  <p className="text-blue-200 text-sm mb-1">Leads/mês</p>
-                  <p className="text-3xl font-bold tracking-tight">{leads}</p>
+              <div className="flex flex-wrap items-center justify-between gap-6 relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="bg-white/10 p-2 rounded-lg backdrop-blur-sm">
+                    <TrendingUp size={24} className="text-blue-200" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-white">Diagnóstico Atual</h2>
+                    <p className="text-blue-200 text-sm">Visão geral da sua performance</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-blue-200 text-sm mb-1">Vendas/mês</p>
-                  <p className="text-3xl font-bold tracking-tight">{result.currentSales.toFixed(1)}</p>
-                </div>
-                <div>
-                  <p className="text-blue-200 text-sm mb-1">Faturamento mensal</p>
-                  <p className="text-3xl font-bold tracking-tight">{formatCurrency(result.currentRevenue)}</p>
-                </div>
-                <div className="bg-white/10 rounded-xl p-3 -m-3 backdrop-blur-sm border border-white/10">
-                  <p className="text-blue-200 text-xs uppercase tracking-wider mb-1">Projeção Anual</p>
-                  <p className="text-xl font-bold text-white">{formatCurrency(result.annualRevenue)}</p>
+                
+                <div className="flex flex-wrap items-center gap-8 lg:gap-12">
+                  <div>
+                    <p className="text-blue-300 text-xs uppercase tracking-wider font-medium mb-1">Faturamento/mês</p>
+                    <p className="text-3xl lg:text-4xl font-bold tracking-tight">{formatCurrency(result.currentRevenue)}</p>
+                  </div>
+                  <div className="hidden sm:block w-px h-12 bg-white/10"></div>
+                  <div>
+                     <p className="text-blue-300 text-xs uppercase tracking-wider font-medium mb-1">Vendas/mês</p>
+                     <p className="text-3xl lg:text-4xl font-bold tracking-tight">{result.currentSales.toFixed(1)}</p>
+                  </div>
+                  <div className="hidden sm:block w-px h-12 bg-white/10"></div>
+                  <div className="bg-white/10 rounded-xl px-5 py-2 backdrop-blur-sm border border-white/10">
+                    <p className="text-blue-200 text-xs uppercase tracking-wider font-bold mb-0.5">Projeção Anual</p>
+                    <p className="text-xl lg:text-2xl font-bold text-white">{formatCurrency(result.annualRevenue)}</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* SECTION 2: LOSS ANALYSIS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* ROW 2: LOSS ANALYSIS GRID */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
               {/* Follow-up Card */}
-              <div className={`${getStatusColor(result.followUpStatus)} rounded-2xl shadow-md p-6 text-white transition-all duration-500 ease-in-out relative overflow-hidden border-t-4 border-white/20`}>
-                {result.followUpStatus === 'CRITICAL' && (
-                   <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white opacity-10 rounded-full animate-pulse"></div>
-                )}
-                
+              <div className={`${getStatusColor(result.followUpStatus)} rounded-xl shadow-sm p-6 text-white relative overflow-hidden border-t-4 border-white/20 flex flex-col min-h-[200px]`}>
                 <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full backdrop-blur-md border border-white/10">
-                     <Phone size={14} />
-                     <span className="text-xs font-bold tracking-wider">{getStatusLabel(result.followUpStatus)}</span>
+                  <div className="flex items-center gap-3">
+                     <div className="bg-black/20 p-2 rounded-lg backdrop-blur-md">
+                        <Phone size={20} />
+                     </div>
+                     <h3 className="text-xl font-bold">Follow-up</h3>
                   </div>
-                  {result.followUpStatus === 'CRITICAL' && <AlertTriangle className="text-white/80" />}
-                  {(result.followUpStatus === 'ADEQUATE') && <CheckCircle2 className="text-emerald-300" />}
+                  <div className="flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full backdrop-blur-md border border-white/10">
+                     <span className="text-xs font-bold tracking-wider">{getStatusLabel(result.followUpStatus)}</span>
+                     {result.followUpStatus === 'ADEQUATE' && <CheckCircle2 size={14} className="text-emerald-300" />}
+                  </div>
                 </div>
 
-                <h3 className="text-xl font-bold mb-2">Processo de Follow-up</h3>
-                <p className="text-white/80 text-sm mb-6 leading-relaxed">
+                <p className="text-white/90 text-sm mb-6 leading-relaxed flex-grow">
                   {result.followUpStatus === 'ADEQUATE' 
-                    ? 'Volume de tentativas adequado.' 
-                    : `Você faz ${followUps} tentativas. O ideal são 7 ou mais.`}
+                    ? 'Excelente! Você mantém um volume de tentativas que garante a máxima recuperação de leads.' 
+                    : `Você realiza apenas ${followUps} tentativas. O ideal para maximizar a conversão é acima de 7.`}
                 </p>
 
-                <div className="bg-black/10 rounded-xl p-4 space-y-3 mb-4">
-                   <div className="flex justify-between items-end border-b border-white/10 pb-2">
+                <div className="bg-black/10 rounded-lg p-4">
+                   <div className="flex justify-between items-end border-b border-white/10 pb-2 mb-2">
                       <span className="text-sm opacity-80">Vendas perdidas/mês</span>
                       <span className="font-bold text-lg">{result.followUpLossSales > 0 ? result.followUpLossSales.toFixed(1) : '0'}</span>
                    </div>
@@ -560,28 +574,30 @@ const App: React.FC = () => {
               </div>
 
               {/* Response Time Card */}
-              <div className={`${getStatusColor(result.responseStatus)} rounded-2xl shadow-md p-6 text-white transition-all duration-500 ease-in-out relative overflow-hidden border-t-4 border-white/20`}>
-                 {result.responseStatus === 'CRITICAL' && (
-                   <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white opacity-10 rounded-full animate-pulse"></div>
-                )}
+              <div className={`${getStatusColor(result.responseStatus)} rounded-xl shadow-sm p-6 text-white relative overflow-hidden border-t-4 border-white/20 flex flex-col min-h-[200px]`}>
                 <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full backdrop-blur-md border border-white/10">
-                     <Clock size={14} />
-                     <span className="text-xs font-bold tracking-wider">{getStatusLabel(result.responseStatus)}</span>
+                  <div className="flex items-center gap-3">
+                     <div className="bg-black/20 p-2 rounded-lg backdrop-blur-md">
+                        <Clock size={20} />
+                     </div>
+                     <h3 className="text-xl font-bold">Tempo Resposta</h3>
                   </div>
-                  {['CRITICAL', 'WARNING'].includes(result.responseStatus) && <AlertTriangle className="text-white/80" />}
-                  {['GOOD', 'EXCELLENT'].includes(result.responseStatus) && <CheckCircle2 className="text-emerald-300" />}
+                  <div className="flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full backdrop-blur-md border border-white/10">
+                     <span className="text-xs font-bold tracking-wider">{getStatusLabel(result.responseStatus)}</span>
+                     {['GOOD', 'EXCELLENT'].includes(result.responseStatus) && <CheckCircle2 size={14} className="text-emerald-300" />}
+                  </div>
                 </div>
 
-                <h3 className="text-xl font-bold mb-2">Tempo de Resposta</h3>
-                <p className="text-white/80 text-sm mb-6 leading-relaxed">
-                  {result.responseStatus === 'EXCELLENT' || result.responseStatus === 'GOOD'
-                    ? 'Velocidade de atendimento competitiva.' 
-                    : `Tempo atual: ${formatTime(responseTime)}. O ideal é < 5 min.`}
+                <p className="text-white/90 text-sm mb-6 leading-relaxed flex-grow">
+                  {result.responseStatus === 'EXCELLENT'
+                    ? 'Velocidade de atendimento excelente! Continue assim.' 
+                    : result.responseStatus === 'GOOD'
+                    ? `Tempo atual: ${formatTime(responseTime)}. Ainda pode melhorar.`
+                    : `Tempo atual: ${formatTime(responseTime)}. O ideal é ≤ 5 min.`}
                 </p>
 
-                <div className="bg-black/10 rounded-xl p-4 space-y-3 mb-4">
-                   <div className="flex justify-between items-end border-b border-white/10 pb-2">
+                <div className="bg-black/10 rounded-lg p-4">
+                   <div className="flex justify-between items-end border-b border-white/10 pb-2 mb-2">
                       <span className="text-sm opacity-80">Vendas perdidas/mês</span>
                       <span className="font-bold text-lg">{result.responseLossSales > 0 ? result.responseLossSales.toFixed(1) : '0'}</span>
                    </div>
@@ -593,71 +609,66 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* SECTION 3: IMPACT SUMMARY */}
-            <div className={`${result.totalLossAnnual > 0 ? 'bg-gradient-to-r from-red-900 to-red-800' : 'bg-gradient-to-r from-[#003366] to-[#004488]'} rounded-2xl shadow-xl p-8 text-white relative overflow-hidden`}>
-              <div className="absolute -right-10 -top-10 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
-              
-              <div className="relative z-10">
-                 {result.totalLossAnnual === 0 ? (
-                   <div className="text-center py-8">
-                     <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-                        <CheckCircle2 size={40} className="text-emerald-300" />
+            {/* ROW 3: IMPACT SUMMARY BANNER */}
+            <div className={`${result.totalLossAnnual > 0 ? 'bg-gradient-to-br from-red-900 via-red-800 to-red-900' : 'bg-gradient-to-br from-[#003366] to-[#004488]'} rounded-xl shadow-lg p-6 lg:p-8 text-white relative overflow-hidden`}>
+               {result.totalLossAnnual > 0 && (
+                  <div className="absolute -right-10 -top-10 w-64 h-64 bg-red-500 rounded-full opacity-20 blur-3xl"></div>
+               )}
+               
+               <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
+                  <div className="flex-1 text-center lg:text-left">
+                    <h2 className="text-2xl font-bold mb-2 flex items-center justify-center lg:justify-start gap-3">
+                       {result.totalLossAnnual > 0 ? <AlertTriangle className="text-red-400" size={28} /> : <CheckCircle2 className="text-emerald-400" size={28} />}
+                       {result.totalLossAnnual > 0 ? 'Impacto Financeiro Total' : 'Operação Otimizada'}
+                    </h2>
+                    <p className="text-white/80 text-sm lg:text-base max-w-xl">
+                      {result.totalLossAnnual > 0 
+                        ? 'Este é o montante estimado que sua empresa deixa de ganhar anualmente devido a falhas no processo de atendimento.'
+                        : 'Sua operação comercial está atingindo o máximo potencial de eficiência nas métricas analisadas.'}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-8 bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
+                     <div className="text-center">
+                        <p className="text-xs text-white/70 uppercase tracking-wider mb-1">Eficiência Comercial</p>
+                        <div className="flex items-baseline justify-center gap-1">
+                          <span className={`text-3xl font-bold ${result.efficiency < 70 ? 'text-red-400' : 'text-emerald-400'}`}>
+                            {result.efficiency.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-32 h-1.5 bg-white/10 rounded-full mt-2 overflow-hidden">
+                           <div 
+                             className={`h-full rounded-full ${result.efficiency < 70 ? 'bg-red-500' : 'bg-emerald-500'}`} 
+                             style={{ width: `${result.efficiency}%` }}
+                           ></div>
+                        </div>
                      </div>
-                     <h2 className="text-3xl font-bold mb-3">Operação Otimizada!</h2>
-                     <p className="text-blue-100 text-lg max-w-xl mx-auto">Sua eficiência operacional está em 100% baseada nos parâmetros do mercado.</p>
-                   </div>
-                 ) : (
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-                     <div>
-                       <h2 className="text-lg font-medium text-red-200 mb-6 flex items-center gap-2">
-                         <AlertTriangle size={20} /> IMPACTO FINANCEIRO
-                       </h2>
-                       <div className="space-y-6">
-                         <div>
-                           <div className="flex justify-between items-end mb-2">
-                             <p className="text-sm text-red-200 uppercase tracking-wider">Eficiência da Operação</p>
-                             <span className="font-bold text-xl">{result.efficiency.toFixed(0)}%</span>
-                           </div>
-                           <div className="w-full bg-black/20 h-3 rounded-full overflow-hidden backdrop-blur-sm">
-                             <div className="bg-red-400 h-full shadow-[0_0_10px_rgba(248,113,113,0.5)]" style={{ width: `${result.efficiency}%` }}></div>
-                           </div>
+                     
+                     {result.totalLossAnnual > 0 && (
+                       <>
+                         <div className="hidden sm:block w-px h-16 bg-white/20"></div>
+                         <div className="text-center">
+                            <p className="text-xs text-red-200 uppercase tracking-wider mb-1">Desperdício Anual</p>
+                            <p className="text-3xl lg:text-4xl font-black text-white tracking-tight">{formatCurrency(result.totalLossAnnual)}</p>
                          </div>
-                         <div className="grid grid-cols-2 gap-6 border-t border-white/10 pt-6">
-                            <div>
-                               <p className="text-xs text-red-200 uppercase mb-1">Vendas perdidas/mês</p>
-                               <p className="text-2xl font-bold">{result.totalLossSales.toFixed(1)}</p>
-                            </div>
-                            <div>
-                               <p className="text-xs text-red-200 uppercase mb-1">Receita perdida/mês</p>
-                               <p className="text-2xl font-bold">{formatCurrency(result.totalLossRevenue)}</p>
-                            </div>
-                         </div>
-                       </div>
-                     </div>
-                     <div className="text-center md:text-right md:border-l border-white/10 md:pl-10 py-4">
-                       <p className="text-red-200 text-lg mb-1">Potencial de receita anual</p>
-                       <p className="text-red-300 text-sm mb-3">sendo desperdiçado</p>
-                       <p className="text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-xl">
-                         {formatCurrency(result.totalLossAnnual)}
-                       </p>
-                     </div>
-                   </div>
-                 )}
-              </div>
+                       </>
+                     )}
+                  </div>
+               </div>
             </div>
 
-            {/* CHARTS SECTION */}
+            {/* ROW 4: CHARTS */}
             {result.totalLossAnnual > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                <h3 className="text-[#003366] font-bold mb-6 flex items-center gap-2 text-lg">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col h-[300px]">
+                <h3 className="text-[#003366] font-bold mb-4 flex items-center gap-2">
                   <BarChart3 size={20} className="text-[#FF6600]" /> Potencial de Vendas
                 </h3>
-                <div className="h-64 w-full">
+                <div className="flex-grow w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={barData}
-                      margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                       <XAxis 
@@ -666,15 +677,14 @@ const App: React.FC = () => {
                         tickLine={false}
                         tick={{fontSize: 11, fill: '#6b7280', fontWeight: 500}}
                         dy={10}
-                        interval={0}
                       />
                       <YAxis hide />
                       <Tooltip 
                         cursor={{fill: '#f9fafb'}}
                         formatter={(value: number) => [formatCurrency(value), 'Receita']}
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                       />
-                      <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={50}>
+                      <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={50}>
                         <LabelList 
                           dataKey="value" 
                           position="top" 
@@ -690,20 +700,20 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                <h3 className="text-[#003366] font-bold mb-6 flex items-center gap-2 text-lg">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col h-[300px]">
+                <h3 className="text-[#003366] font-bold mb-4 flex items-center gap-2">
                    <PieChartIcon size={20} className="text-[#FF6600]" /> Composição da Perda
                 </h3>
-                <div className="h-64 w-full relative">
+                <div className="flex-grow w-full relative">
                    <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={pieData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={65}
-                        outerRadius={85}
-                        paddingAngle={4}
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
                         dataKey="value"
                         stroke="none"
                       >
@@ -713,11 +723,10 @@ const App: React.FC = () => {
                       </Pie>
                       <Tooltip 
                          formatter={(value: number) => formatCurrency(value)}
-                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
-                  {/* Center Label */}
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
                      <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Total</p>
                      <p className="text-sm font-bold text-gray-800">{formatCurrency(result.totalLossAnnual)}</p>
@@ -735,67 +744,58 @@ const App: React.FC = () => {
             </div>
             )}
             
-            {/* MARKET DATA REFERENCES */}
-            <div className="mt-12 border-t border-gray-100 pt-10 pb-24">
-              <h3 className="text-gray-400 font-bold uppercase tracking-widest text-xs mb-8 flex items-center gap-2">
-                <Building2 size={14} />
-                Benchmarks de Mercado
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <a 
-                  href="https://www.marketingdonut.co.uk/sales/sales-strategy/why-you-must-follow-up-leads" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-[#003366]/30 transition-all group flex flex-col h-full"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="bg-blue-50 text-[#003366] p-2 rounded-lg group-hover:bg-[#003366] group-hover:text-white transition-colors">
-                        <Phone size={18} />
-                    </div>
-                    <ExternalLink size={14} className="text-gray-300 group-hover:text-[#FF6600]" />
+            {/* ROW 4: MARKET DATA */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 pb-4">
+              <a 
+                href="https://www.marketingdonut.co.uk/sales/sales-strategy/why-you-must-follow-up-leads" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:border-[#003366]/30 transition-all group block h-full"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="bg-blue-50 text-[#003366] p-1.5 rounded group-hover:bg-[#003366] group-hover:text-white transition-colors">
+                      <Phone size={14} />
                   </div>
-                  <p className="text-gray-600 text-sm flex-grow leading-relaxed">
-                    <span className="font-bold text-gray-900">80% das vendas B2B</span> requerem 5 ou mais follow-ups para serem concretizadas.
-                  </p>
-                  <p className="text-xs text-gray-400 mt-4 font-medium">Marketing Donut</p>
-                </a>
+                  <span className="text-xs font-bold text-gray-400 uppercase">Marketing Donut</span>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  <span className="font-bold text-gray-900">80% das vendas B2B</span> requerem 5 ou mais follow-ups para serem fechadas.
+                </p>
+              </a>
 
-                <a 
-                  href="https://cdn2.hubspot.net/hub/25649/file-13535879-pdf/docs/mit_study.pdf?utm_source=chatgpt.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-[#003366]/30 transition-all group flex flex-col h-full"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="bg-emerald-50 text-emerald-600 p-2 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                        <Clock size={18} />
-                    </div>
-                    <ExternalLink size={14} className="text-gray-300 group-hover:text-[#FF6600]" />
+              <a 
+                href="https://cdn2.hubspot.net/hub/25649/file-13535879-pdf/docs/mit_study.pdf?utm_source=chatgpt.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:border-[#003366]/30 transition-all group block h-full"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                      <Clock size={14} />
                   </div>
-                  <p className="text-gray-600 text-sm flex-grow leading-relaxed">
-                    Responder em <span className="font-bold text-gray-900">5 minutos</span> aumenta as chances de contato e qualificação em até <span className="font-bold text-gray-900">9x</span>.
-                  </p>
-                  <p className="text-xs text-gray-400 mt-4 font-medium">MIT Study</p>
-                </a>
+                   <span className="text-xs font-bold text-gray-400 uppercase">MIT Study</span>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Responder em <span className="font-bold text-gray-900">5 minutos</span> aumenta as chances de contato em <span className="font-bold text-gray-900">9x</span>.
+                </p>
+              </a>
 
-                <a 
-                  href="https://blog.hubspot.com/blog/tabid/6307/bid/30901/30-thought-provoking-lead-nurturing-stats-you-can-t-ignore.aspx?utm_source=chatgpt.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-[#003366]/30 transition-all group flex flex-col h-full"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="bg-purple-50 text-purple-600 p-2 rounded-lg group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                        <TrendingUp size={18} />
-                    </div>
-                    <ExternalLink size={14} className="text-gray-300 group-hover:text-[#FF6600]" />
+              <a 
+                href="https://blog.hubspot.com/blog/tabid/6307/bid/30901/30-thought-provoking-lead-nurturing-stats-you-can-t-ignore.aspx?utm_source=chatgpt.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:border-[#003366]/30 transition-all group block h-full"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="bg-purple-50 text-purple-600 p-1.5 rounded group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                      <TrendingUp size={14} />
                   </div>
-                  <p className="text-gray-600 text-sm flex-grow leading-relaxed">
-                    <span className="font-bold text-gray-900">35–50% das vendas</span> são fechadas pelo fornecedor que responde primeiro ao lead.
-                  </p>
-                  <p className="text-xs text-gray-400 mt-4 font-medium">HubSpot</p>
-                </a>
-              </div>
+                  <span className="text-xs font-bold text-gray-400 uppercase">HubSpot</span>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  <span className="font-bold text-gray-900">35–50%</span> das vendas vão para o fornecedor que responde primeiro.
+                </p>
+              </a>
             </div>
 
           </div>
@@ -803,26 +803,26 @@ const App: React.FC = () => {
       </main>
 
       {/* Sticky Footer Message */}
-      <div className={`fixed bottom-0 left-0 w-full transition-colors duration-500 ${result.totalLossAnnual > 0 ? 'bg-gray-900' : 'bg-[#003366]'} text-white py-4 shadow-2xl z-40 border-t border-white/10`}>
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+      <div className={`fixed bottom-0 left-0 w-full transition-colors duration-500 ${result.totalLossAnnual > 0 ? 'bg-gray-900' : 'bg-[#003366]'} text-white py-3 lg:py-0 lg:h-16 shadow-2xl z-40 border-t border-white/10 flex items-center`}>
+        <div className="w-full max-w-7xl mx-auto px-4 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
            <div className="flex items-center gap-3 justify-center sm:justify-start">
              {result.totalLossAnnual > 0 ? (
                <>
-                 <div className="bg-red-500/20 p-2 rounded-full animate-pulse">
-                    <AlertTriangle size={20} className="text-red-400" />
+                 <div className="bg-red-500/20 p-1.5 rounded-full animate-pulse hidden sm:block">
+                    <AlertTriangle size={16} className="text-red-400" />
                  </div>
-                 <p className="font-medium text-sm sm:text-base">A cada mês, <span className="text-red-400 font-bold">{formatCurrency(result.totalLossRevenue)}</span> são deixados na mesa.</p>
+                 <p className="font-medium text-xs sm:text-sm">A cada mês, <span className="text-red-400 font-bold">{formatCurrency(result.totalLossRevenue)}</span> são deixados na mesa.</p>
                </>
              ) : (
                <>
-                 <div className="bg-emerald-500/20 p-2 rounded-full">
-                    <CheckCircle2 size={20} className="text-emerald-400" />
+                 <div className="bg-emerald-500/20 p-1.5 rounded-full hidden sm:block">
+                    <CheckCircle2 size={16} className="text-emerald-400" />
                  </div>
-                 <p className="font-medium text-sm sm:text-base">Parabéns! Sua operação comercial está otimizada.</p>
+                 <p className="font-medium text-xs sm:text-sm">Parabéns! Sua operação comercial está otimizada.</p>
                </>
              )}
            </div>
-           <button className="bg-[#FF6600] hover:bg-[#e65c00] text-white px-8 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg hover:shadow-orange-500/20 transform hover:-translate-y-0.5">
+           <button className="bg-[#FF6600] hover:bg-[#e65c00] text-white px-6 py-2 rounded-lg font-bold text-xs sm:text-sm transition-all shadow-lg hover:shadow-orange-500/20 transform hover:-translate-y-0.5">
              Falar com um especialista
            </button>
         </div>
